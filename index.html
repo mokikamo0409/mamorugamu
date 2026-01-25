@@ -11,134 +11,115 @@
             -webkit-tap-highlight-color: transparent; 
             margin: 0;
             padding: 0;
+            user-select: none;
         }
 
         body { 
             background: #F2F2F7;
-            color: #333;
+            color: #1C1C1E;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             height: 100dvh; 
             overflow: hidden;
         }
 
-        /* ページ切り替え */
+        /* 共通アニメーション */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ページ構造 */
         .page {
             width: 100%;
             height: 100dvh;
             position: absolute;
             top: 0;
             left: 0;
-            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
             opacity: 0;
-            transform: scale(0.98);
+            transform: scale(0.96);
             pointer-events: none;
+            transition: opacity 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
             background: #F2F2F7;
+            z-index: 1;
         }
 
         .page.active {
             opacity: 1;
             transform: scale(1);
             pointer-events: auto;
+            z-index: 10;
         }
 
-        /* ホームページ */
+        /* ----------------
+           ホームページ 
+           ---------------- */
         .home-page {
-            background: #F2F2F7;
-            padding: max(env(safe-area-inset-top), 20px) 20px calc(20px + env(safe-area-inset-bottom)) 20px;
-            overflow-y: auto;
             height: 100dvh;
+            overflow-y: auto;
+            padding: max(env(safe-area-inset-top), 20px) 20px 120px 20px; /* 下部にボタン用スペース確保 */
+            max-width: 600px;
+            margin: 0 auto;
         }
 
         .home-header {
-            text-align: center;
-            padding: 20px 0 24px 0;
-        }
-
-        .home-title {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 6px;
-            color: #0A84FF;
-        }
-
-        .home-subtitle {
-            font-size: 14px;
-            color: #666;
-        }
-
-        .start-scan-btn {
-            width: 100%;
-            padding: 18px;
-            background: linear-gradient(135deg, #0A84FF 0%, #00A6FF 100%);
-            border: none;
-            border-radius: 16px;
-            color: white;
-            font-size: 17px;
-            font-weight: 600;
-            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
             margin-bottom: 24px;
-            box-shadow: 0 8px 20px rgba(10, 132, 255, 0.25);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .start-scan-btn:active {
-            transform: scale(0.98);
-            box-shadow: 0 4px 10px rgba(10, 132, 255, 0.2);
+            padding-top: 10px;
         }
 
-        /* Dashboard Grid */
+        .home-titles { text-align: left; }
+        .home-title {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #000;
+        }
+        .home-subtitle {
+            font-size: 13px;
+            font-weight: 600;
+            color: #8E8E93;
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ダッシュボードグリッド */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 12px;
+            gap: 16px;
+            margin-bottom: 24px;
         }
 
         .dashboard-card {
             background: white;
-            border-radius: 16px;
-            padding: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.03);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            position: relative;
+            overflow: hidden;
         }
 
-        .card-full {
-            grid-column: span 2;
+        .card-full { grid-column: span 2; }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 12px;
         }
+
+        .card-icon { color: #0A84FF; }
 
         .card-label {
             font-size: 13px;
             font-weight: 600;
             color: #8E8E93;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
 
-        .card-value-container {
-            display: flex;
-            align-items: baseline;
-            gap: 4px;
-        }
-
-        .card-value {
-            font-size: 28px;
-            font-weight: 700;
-            color: #1C1C1E;
-        }
-
-        .card-unit {
-            font-size: 14px;
-            color: #8E8E93;
-            font-weight: 600;
-        }
-
-        /* Circular Progress */
+        /* 健康率リング */
         .score-ring-container {
             position: relative;
             width: 100%;
@@ -146,660 +127,283 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-top: -10px;
+            margin-top: -5px;
         }
 
-        .score-circle {
-            transform: rotate(-90deg);
-            transform-origin: 50% 50%;
-        }
-        
-        .score-background {
-            stroke: #E5E5EA;
-            fill: none;
-            stroke-width: 8;
-        }
-        
+        .score-circle { transform: rotate(-90deg); transform-origin: 50% 50%; }
+        .score-background { stroke: #F2F2F7; fill: none; stroke-width: 10; }
         .score-progress {
-            stroke: #0A84FF;
             fill: none;
-            stroke-width: 8;
+            stroke-width: 10;
             stroke-linecap: round;
-            stroke-dasharray: 251; /* 2 * PI * 40 */
+            stroke-dasharray: 251;
             stroke-dashoffset: 251;
-            transition: stroke-dashoffset 1s ease-out, stroke 0.3s ease;
+            transition: stroke-dashoffset 1.5s cubic-bezier(0.2, 0.8, 0.2, 1), stroke 0.3s ease;
         }
 
-        .score-center-text {
+        .score-center-text { position: absolute; text-align: center; }
+        .score-percent { font-size: 26px; font-weight: 800; color: #1C1C1E; letter-spacing: -0.5px; }
+        .score-unit { font-size: 12px; color: #8E8E93; font-weight: 600; }
+
+        /* カレンダーアイコン（CSSのみで描画） */
+        .calendar-icon {
+            width: 50px;
+            height: 50px;
+            background: #fff;
+            border: 2px solid #E5E5EA;
+            border-radius: 10px;
+            position: relative;
+            margin: 0 auto 8px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        .calendar-icon::before {
+            content: '';
             position: absolute;
-            text-align: center;
+            top: -4px;
+            left: 10px;
+            width: 4px;
+            height: 8px;
+            background: #FF3B30;
+            border-radius: 2px;
+            box-shadow: 22px 0 0 #FF3B30;
         }
+        .calendar-icon.today { border-color: #FF3B30; color: #FF3B30; }
+        .calendar-val { font-size: 20px; font-weight: 700; color: #1C1C1E; }
+        .calendar-icon.today .calendar-val { color: #FF3B30; }
         
-        .score-percent {
-            font-size: 24px;
-            font-weight: 800;
-            color: #1C1C1E;
-        }
-        
-        .score-label {
-            font-size: 11px;
-            color: #8E8E93;
-        }
+        .next-scan-text { text-align: center; font-size: 12px; color: #8E8E93; font-weight: 600; }
+        .next-scan-text strong { color: #1C1C1E; font-size: 14px; }
 
-        /* Next Scan Badge */
-        .next-scan-info {
-            font-size: 11px;
-            color: #8E8E93;
-            margin-top: 4px;
-            text-align: center;
-        }
-
-        /* Trend Chart */
+        /* トレンドチャート */
         .chart-container {
             width: 100%;
-            height: 120px;
+            height: 100px;
             position: relative;
-            margin-top: 8px;
         }
-        
-        #trendCanvas {
-            width: 100%;
-            height: 100%;
-        }
+        #trendCanvas { width: 100%; height: 100%; }
 
-        .chart-legend {
-            display: flex;
-            justify-content: space-between;
-            font-size: 10px;
-            color: #C7C7CC;
-            margin-top: 4px;
-        }
-
-        /* Distribution Bar */
+        /* 分布バー */
+        .dist-bar-container { margin-top: 8px; }
         .distribution-bar {
-            height: 12px;
+            height: 16px;
             width: 100%;
-            background: #E5E5EA;
-            border-radius: 6px;
+            background: #F2F2F7;
+            border-radius: 8px;
             overflow: hidden;
             display: flex;
-            margin-top: 8px;
         }
-
-        .dist-segment {
-            height: 100%;
-            transition: width 0.5s ease;
-        }
-
+        .dist-segment { height: 100%; transition: width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
         .dist-legend {
             display: flex;
             gap: 12px;
-            margin-top: 8px;
+            margin-top: 10px;
             flex-wrap: wrap;
+            justify-content: flex-start;
         }
-
         .dist-item {
             display: flex;
             align-items: center;
-            font-size: 11px;
+            font-size: 10px;
             color: #666;
-            font-weight: 500;
+            font-weight: 600;
+            background: #F9F9F9;
+            padding: 4px 8px;
+            border-radius: 6px;
         }
+        .dist-dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
 
-        .dist-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-right: 4px;
-        }
-
-
-        .history-section {
-            margin-top: 24px;
-            margin-bottom: 24px;
-        }
-
-        .section-title {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: #1C1C1E;
-            padding-left: 4px;
-        }
-
-        .history-list {
+        /* 履歴リスト */
+        .section-header {
             display: flex;
-            flex-direction: column;
-            gap: 10px;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 12px;
+            padding: 0 4px;
+            margin-top: 32px;
         }
+        .section-title { font-size: 20px; font-weight: 800; color: #1C1C1E; }
+        .section-more { font-size: 12px; color: #0A84FF; font-weight: 600; }
+
+        .history-list { display: flex; flex-direction: column; gap: 12px; }
 
         .history-item {
             background: white;
             border-radius: 16px;
             padding: 16px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            position: relative;
+            overflow: hidden;
             transition: transform 0.1s;
-            cursor: pointer;
         }
+        .history-item:active { transform: scale(0.98); background: #fafafa; }
         
-        .history-item:active {
-            transform: scale(0.98);
-            background: #f9f9f9;
-        }
-
-        .history-info {
-            flex: 1;
-        }
-
-        .history-date {
-            font-size: 12px;
-            color: #8E8E93;
-            margin-bottom: 4px;
-        }
-
-        .history-result {
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .history-arrow {
-            color: #C7C7CC;
-            margin: 0 8px;
-        }
-
-        .history-delete {
-            background: #F2F2F7;
-            border: none;
-            color: #FF3B30;
-            width: 32px;
-            height: 32px;
+        .history-indicator {
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 2;
+            margin-right: 16px;
+            flex-shrink: 0;
         }
+        .history-content { flex: 1; }
+        .history-result-text { font-size: 16px; font-weight: 700; color: #1C1C1E; margin-bottom: 2px; }
+        .history-date-text { font-size: 12px; color: #8E8E93; font-weight: 500; }
+        .history-arrow { color: #C7C7CC; margin-right: 12px; }
+        .history-delete-btn {
+            background: none; border: none; padding: 8px;
+            color: #C7C7CC; transition: color 0.2s;
+            display: flex; align-items: center;
+        }
+        .history-delete-btn:active { color: #FF3B30; }
 
-        .empty-history {
+        .empty-state {
             text-align: center;
             padding: 40px 20px;
             color: #8E8E93;
             font-size: 14px;
             background: white;
-            border-radius: 16px;
-            border: 1px dashed #C7C7CC;
+            border-radius: 20px;
+            border: 2px dashed #E5E5EA;
         }
 
-        /* カメラページ */
+        /* 固定ボトムボタン */
+        .bottom-action-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 20px calc(20px + env(safe-area-inset-bottom)) 20px;
+            background: rgba(242, 242, 247, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 100;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: center;
+        }
+
+        .scan-fab {
+            width: 100%;
+            max-width: 400px;
+            height: 56px;
+            background: #0A84FF;
+            color: white;
+            border: none;
+            border-radius: 28px;
+            font-size: 17px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 8px 20px rgba(10, 132, 255, 0.3);
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        .scan-fab:active { transform: scale(0.96); box-shadow: 0 4px 10px rgba(10, 132, 255, 0.2); }
+        .scan-fab svg { width: 24px; height: 24px; }
+
+        /* ----------------
+           カメラページ & その他
+           ---------------- */
         .camera-view {
             position: relative;
             width: 100%;
             height: 100dvh;
             background: #000;
         }
-
-        video {
-            width: 100%; 
-            height: 100%;
-            object-fit: cover;
-            transform: scaleX(-1);
-        }
-
+        /* 外カメラなので反転しない */
+        video { width: 100%; height: 100%; object-fit: cover; }
+        
         .top-bar {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            padding: max(env(safe-area-inset-top), 16px) 16px 16px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            position: absolute; top: 0; left: 0; right: 0;
+            padding: max(env(safe-area-inset-top), 16px) 16px;
+            display: flex; justify-content: space-between; align-items: center;
             z-index: 100;
-            background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, transparent 100%);
         }
-
-        .back-btn, .help-icon, .zoom-btn, .flash-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+        .back-btn, .help-icon, .zoom-btn {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(0,0,0,0.3); backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white; display: flex; align-items: center; justify-content: center;
         }
-
-        .back-btn svg, .help-icon svg, .zoom-btn svg, .flash-btn svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        .top-controls {
-            display: flex;
-            gap: 8px;
-        }
-
         .scan-zone {
-            position: absolute;
-            top: 40%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 280px;
-            height: 180px;
-            z-index: 10;
-            transition: all 0.3s ease;
+            position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);
+            width: 280px; height: 180px; z-index: 10; transition: all 0.3s;
         }
-
-        .scan-zone.zoomed {
-            width: 340px;
-            height: 220px;
-        }
-
+        .scan-zone.zoomed { width: 340px; height: 220px; }
         .scan-border {
-            width: 100%;
-            height: 100%;
-            border: 2px solid rgba(255,255,255,0.8);
-            border-radius: 20px;
-            position: relative;
-            box-shadow: 0 0 0 2000px rgba(0, 0, 0, 0.6);
+            width: 100%; height: 100%; border: 2px solid rgba(255,255,255,0.8);
+            border-radius: 20px; position: relative;
+            box-shadow: 0 0 0 2000px rgba(0,0,0,0.6);
         }
-
-        .corner-mark {
-            position: absolute;
-            width: 24px;
-            height: 24px;
-            border: 4px solid #0A84FF;
-            border-radius: 4px;
-        }
-
-        .tl { top: -2px; left: -2px; border-right: none; border-bottom: none; border-top-left-radius: 18px; }
-        .tr { top: -2px; right: -2px; border-left: none; border-bottom: none; border-top-right-radius: 18px; }
-        .bl { bottom: -2px; left: -2px; border-right: none; border-top: none; border-bottom-left-radius: 18px; }
-        .br { bottom: -2px; right: -2px; border-left: none; border-top: none; border-bottom-right-radius: 18px; }
-
         .scan-hint {
-            position: absolute;
-            top: -50px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 15px;
-            font-weight: 600;
-            color: white;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-            background: rgba(0,0,0,0.3);
-            padding: 8px 16px;
-            border-radius: 20px;
-            display: inline-block;
-            margin: 0 auto;
-            width: fit-content;
-            backdrop-filter: blur(4px);
+            position: absolute; top: -60px; left: 0; right: 0; text-align: center;
+            color: white; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.4); padding: 6px 16px; border-radius: 20px;
+            display: inline-block; width: fit-content; margin: 0 auto;
         }
-
         .bottom-sheet {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            border-radius: 24px 24px 0 0;
-            padding: 24px 20px calc(24px + env(safe-area-inset-bottom)) 20px;
-            z-index: 50;
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+            position: absolute; bottom: 0; left: 0; right: 0;
+            background: white; border-radius: 24px 24px 0 0;
+            padding: 24px 20px calc(24px + env(safe-area-inset-bottom)) 20px; z-index: 50;
         }
-
-        .result-box {
-            background: #F8F9FA;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-            text-align: center;
-            min-height: 100px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .result-status {
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: #999;
-            margin-bottom: 8px;
-        }
-
-        .result-title {
-            font-size: 26px;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 6px;
-        }
-
-        .result-message {
-            font-size: 14px;
-            font-weight: 500;
-            color: #666;
-            line-height: 1.4;
-        }
-
-        .debug-data {
-            font-size: 10px;
-            font-family: 'SF Mono', monospace;
-            color: #999;
-            margin-top: 8px;
-        }
-
+        .result-box { text-align: center; margin-bottom: 20px; }
+        .result-title { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+        .result-message { color: #666; font-size: 14px; }
         .capture-btn {
-            width: 72px;
-            height: 72px;
-            border-radius: 50%;
-            background: #0A84FF;
-            border: 4px solid white;
-            margin: 0 auto;
-            display: block;
-            cursor: pointer;
-            box-shadow: 0 4px 16px rgba(10, 132, 255, 0.3);
-            transition: transform 0.1s;
-            position: relative;
+            width: 72px; height: 72px; border-radius: 50%; background: #0A84FF;
+            border: 4px solid white; margin: 0 auto; display: block;
+            box-shadow: 0 4px 16px rgba(10, 132, 255, 0.4); position: relative;
         }
-
         .capture-btn::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: white;
+            content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+            width: 32px; height: 32px; background: white; border-radius: 50%;
         }
-
-        .capture-btn:active {
-            transform: scale(0.95);
-        }
-
-        .capture-btn.retry-mode {
-            background: white;
-            border-color: #0A84FF;
-        }
-
-        .capture-btn.retry-mode::after {
-            background: #0A84FF;
-            border-radius: 6px;
-            width: 24px;
-            height: 24px;
-        }
-
         .capture-btn.loading::after {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: transparent;
-            border: 4px solid #0A84FF;
-            border-top-color: transparent;
+            background: transparent; border: 3px solid #0A84FF; border-top-color: transparent;
             animation: spin 1s linear infinite;
         }
+        @keyframes spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
 
-        @keyframes spin {
-            to { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        /* アドバイスモーダル */
-        .advice-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(5px);
-            z-index: 300;
-            opacity: 0;
-            pointer-events: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            transition: opacity 0.3s ease;
-            display: flex;
-        }
-
-        .advice-modal.show {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .advice-panel {
-            background: white;
-            border-radius: 24px;
-            padding: 28px 24px 24px 24px;
-            max-width: 400px;
-            width: 100%;
-            max-height: 80vh;
-            overflow-y: auto;
-            transform: scale(0.95);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-        }
-
-        .advice-header {
-            text-align: center;
-            margin-bottom: 24px;
-        }
-
-        .advice-icon {
-            font-size: 48px;
-            margin-bottom: 12px;
-        }
-
-        .advice-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 6px;
-            color: #333;
-        }
-
-        .advice-subtitle {
-            font-size: 14px;
-            color: #666;
-        }
-
-        .advice-section {
-            margin-bottom: 20px;
-            padding: 16px;
-            background: #F8F9FA;
-            border-radius: 12px;
-        }
-
-        .advice-section h3 {
-            font-size: 15px;
-            font-weight: 700;
-            color: #0A84FF;
-            margin-bottom: 10px;
-        }
-
-        .advice-section p, .advice-section li {
-            font-size: 14px;
-            line-height: 1.7;
-            color: #333;
-            margin-bottom: 8px;
-        }
-
-        .advice-section ul {
-            padding-left: 20px;
-            margin: 0;
-        }
-
-        .advice-section li {
-            margin-bottom: 6px;
-        }
-
-        .advice-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .advice-btn {
-            flex: 1;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .advice-btn.primary {
-            background: #0A84FF;
-            color: white;
-        }
-
-        .advice-btn.secondary {
-            background: #F8F9FA;
-            color: #333;
-        }
-
-        /* ヘルプモーダル */
+        /* モーダル共通 */
         .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(5px);
-            z-index: 200;
-            opacity: 0;
-            pointer-events: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            transition: opacity 0.3s ease;
-            display: flex;
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+            z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+            display: flex; align-items: center; justify-content: center; padding: 20px;
         }
-
-        .modal-overlay.show {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
+        .modal-overlay.show { opacity: 1; pointer-events: auto; }
         .modal-panel {
-            background: white;
-            border-radius: 24px;
-            padding: 28px 24px 24px 24px;
-            max-width: 400px;
-            width: 100%;
-            max-height: 85vh;
-            overflow-y: auto;
-            transform: scale(0.95);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            background: white; width: 100%; max-width: 400px; border-radius: 24px;
+            padding: 24px; max-height: 85vh; overflow-y: auto;
+            transform: scale(0.94); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
-
-        .modal-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            text-align: center;
-            color: #333;
+        .modal-title { font-size: 22px; font-weight: 700; text-align: center; margin-bottom: 20px; }
+        .advice-icon { font-size: 48px; text-align: center; margin-bottom: 10px; }
+        .advice-section { background: #F2F2F7; padding: 16px; border-radius: 16px; margin-bottom: 16px; }
+        .advice-section h3 { color: #0A84FF; font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+        .advice-section p { font-size: 13px; line-height: 1.6; color: #333; margin: 0; }
+        .advice-section ul { padding-left: 18px; margin: 0; font-size: 13px; color: #333; }
+        .close-btn {
+            width: 100%; padding: 16px; background: #0A84FF; color: white; border: none;
+            border-radius: 14px; font-size: 16px; font-weight: 600; margin-top: 10px;
         }
-
-        .modal-tabs {
-            display: flex;
-            margin-bottom: 20px;
-            background: #F0F3F7;
-            border-radius: 10px;
-            padding: 4px;
-        }
-        .modal-tab {
-            flex: 1;
-            padding: 8px;
-            text-align: center;
-            font-size: 14px;
-            font-weight: 600;
-            color: #666;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: background-color 0.2s, color 0.2s;
-        }
-        .modal-tab.active {
-            background: white;
-            color: #0A84FF;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-        }
-
-        .help-item {
-            margin-bottom: 12px;
-            padding: 16px;
-            background: #F8F9FA;
-            border-radius: 12px;
-        }
-
+        .close-btn.secondary { background: #F2F2F7; color: #000; }
+        
+        .modal-tabs { display: flex; background: #F2F2F7; padding: 4px; border-radius: 12px; margin-bottom: 20px; }
+        .modal-tab { flex: 1; text-align: center; padding: 8px; font-size: 13px; font-weight: 600; color: #8E8E93; border-radius: 8px; }
+        .modal-tab.active { background: white; color: #000; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         .help-content { display: none; }
         .help-content.active { display: block; }
+        .help-item { margin-bottom: 16px; }
+        .help-item h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+        .help-item p { font-size: 13px; color: #666; line-height: 1.5; }
 
-        .help-item h3 {
-            font-size: 15px;
-            font-weight: 700;
-            color: #0A84FF;
-            margin-bottom: 8px;
-        }
-
-        .help-item p {
-            font-size: 14px;
-            line-height: 1.6;
-            color: #333;
-            margin: 0;
-        }
-
-        .help-item p + p {
-            margin-top: 8px;
-        }
-
-        .result-legend-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-        .result-legend-item:last-child { margin-bottom: 0; }
-
-        .result-legend-color {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            margin-right: 12px;
-        }
-        .result-legend-text {
-            font-size: 14px;
-            font-weight: 500;
-            color: #333;
-        }
-
-        .close-btn {
-            width: 100%;
-            padding: 14px;
-            background: #0A84FF;
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 16px;
-        }
-
-        #imageCanvas { display: none; }
+        canvas { display: none; }
     </style>
 </head>
 <body>
@@ -807,76 +411,87 @@
     <div class="page active" id="homePage">
         <div class="home-page">
             <div class="home-header">
-                <div class="home-title">pH Scanner</div>
-                <div class="home-subtitle">口内環境をスマートに管理</div>
+                <div class="home-titles">
+                    <div class="home-title">pH Scanner</div>
+                    <div class="home-subtitle">Oral Health Tracker</div>
+                </div>
             </div>
 
-            <button class="start-scan-btn" id="startScanBtn">
-                <span style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                    スキャンを開始
-                </span>
-            </button>
-
             <div class="dashboard-grid">
+                
                 <div class="dashboard-card">
-                    <div class="card-label">健康率</div>
+                    <div class="card-header">
+                        <svg class="card-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                        <span class="card-label">健康率</span>
+                    </div>
                     <div class="score-ring-container">
-                        <svg width="88" height="88" class="score-circle">
-                            <circle cx="44" cy="44" r="40" class="score-background"></circle>
-                            <circle cx="44" cy="44" r="40" class="score-progress" id="scoreProgress"></circle>
+                        <svg width="100" height="100" class="score-circle">
+                            <circle cx="50" cy="50" r="40" class="score-background"></circle>
+                            <circle cx="50" cy="50" r="40" class="score-progress" id="scoreProgress"></circle>
                         </svg>
                         <div class="score-center-text">
-                            <div class="score-percent" id="healthyRate">0%</div>
+                            <div class="score-percent" id="healthyRate">--</div>
+                            <div class="score-unit">Healthy</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="dashboard-card">
-                    <div class="card-label">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF9500" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                        次回の目安
+                    <div class="card-header">
+                        <svg class="card-icon" style="color: #FF9500;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        <span class="card-label">次回目安</span>
                     </div>
-                    <div style="flex:1; display:flex; flex-direction: column; align-items:center; justify-content:center;">
-                        <div class="card-value" id="nextScanMain" style="font-size: 24px;">--</div>
-                        <div class="next-scan-info" id="nextScanDate"></div>
+                    <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                        <div id="calendarIcon" class="calendar-icon">
+                            <div class="calendar-val" id="calendarDate">--</div>
+                        </div>
+                        <div class="next-scan-text" id="nextScanText">
+                            履歴なし
+                        </div>
                     </div>
                 </div>
 
                 <div class="dashboard-card card-full">
-                    <div class="card-label">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
-                        最近の推移
+                    <div class="card-header">
+                        <svg class="card-icon" style="color: #AF52DE;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+                        <span class="card-label">pHトレンド</span>
                     </div>
                     <div class="chart-container">
                         <canvas id="trendCanvas"></canvas>
                     </div>
-                    <div class="chart-legend">
-                        <span>Past</span>
-                        <span>Today</span>
+                </div>
+
+                <div class="dashboard-card card-full" style="padding-bottom: 16px;">
+                    <div class="card-header">
+                        <svg class="card-icon" style="color: #30B0C7;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
+                        <span class="card-label">状態の内訳</span>
+                    </div>
+                    <div class="dist-bar-container">
+                        <div class="distribution-bar" id="distributionBar"></div>
+                    </div>
+                    <div class="dist-legend" id="distLegend"></div>
+                    <div style="margin-top: 12px; font-size: 11px; color: #8E8E93; text-align: right;">
+                        総スキャン: <span id="totalScans" style="font-weight:700; color:#333;">0</span>回
                     </div>
                 </div>
 
-                <div class="dashboard-card card-full">
-                    <div class="card-label">状態の内訳</div>
-                    <div class="distribution-bar" id="distributionBar">
-                        </div>
-                    <div class="dist-legend" id="distLegend">
-                        </div>
-                </div>
-                
-                <div style="grid-column: span 2; display: flex; justify-content: space-between; padding: 0 8px;">
-                    <span style="font-size: 12px; color: #8E8E93;">総スキャン数: <span id="totalScans" style="font-weight: 600; color: #333;">0</span>回</span>
-                    <span style="font-size: 12px; color: #8E8E93;" id="lastScanText">最終: --</span>
-                 </div>
             </div>
 
             <div class="history-section">
-                <div class="section-title">記録</div>
+                <div class="section-header">
+                    <div class="section-title">記録</div>
+                </div>
                 <div class="history-list" id="historyList">
-                    <div class="empty-history">まだ記録がありません</div>
+                    <div class="empty-state">まだ記録がありません</div>
                 </div>
             </div>
+        </div>
+
+        <div class="bottom-action-bar">
+            <button class="scan-fab" id="startScanBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                スキャンを開始
+            </button>
         </div>
     </div>
 
@@ -885,110 +500,65 @@
             <video id="video" autoplay playsinline muted></video>
 
             <div class="top-bar">
-                <button class="back-btn" id="backBtn" aria-label="Back">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.828 12L16.414 16.586 15 18 9 12 15 6 16.414 7.414z"/></svg>
-                </button>
-                <div class="top-controls">
-                    <button class="zoom-btn" id="zoomBtn" aria-label="Zoom">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396 1.414-1.414-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8 3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z"/></svg>
-                        <span style="font-size: 12px; font-weight: 700; margin-left: 2px;">1x</span>
-                    </button>
-                    <button class="help-icon" id="helpBtn" aria-label="Help">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/><path d="M11 16h2v2h-2zM12 6c-1.654 0-3 1.346-3 3h2c0-.551.448-1 1-1s1 .449 1 1c0 .332-.129.64-.351.874L11 12.84V14h2v-1.355l.839-.84.015-.015c.483-.494.746-1.14.746-1.79C14.6 7.962 13.457 6 12 6z"/></svg>
-                    </button>
+                <button class="back-btn" id="backBtn"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></button>
+                <div style="display:flex; gap:12px;">
+                    <button class="zoom-btn" id="zoomBtn"><span style="font-size:12px; font-weight:800;">1x</span></button>
+                    <button class="help-icon" id="helpBtn"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></button>
                 </div>
             </div>
 
             <div class="scan-zone" id="scanZone">
-                <div class="scan-hint" id="scanHint">ガムを枠内に合わせてください</div>
-                <div class="scan-border">
-                    <div class="corner-mark tl"></div>
-                    <div class="corner-mark tr"></div>
-                    <div class="corner-mark bl"></div>
-                    <div class="corner-mark br"></div>
-                </div>
+                <div class="scan-hint" id="scanHint">ガムを枠に合わせてください</div>
+                <div class="scan-border"></div>
             </div>
 
             <div class="bottom-sheet">
                 <div class="result-box">
-                    <div class="result-status">Status</div>
-                    <div class="result-title" id="resultTitle">準備完了</div>
+                    <div class="result-title" id="resultTitle" style="color:#333;">準備完了</div>
                     <div class="result-message" id="resultMessage">撮影ボタンをタップ</div>
-                    <div class="debug-data" id="debugData"></div>
+                    <div id="debugData" style="font-size:10px; color:#ccc; margin-top:4px; font-family:monospace;"></div>
                 </div>
-
                 <button class="capture-btn" id="captureBtn"></button>
             </div>
         </div>
     </div>
 
-    <div class="advice-modal" id="adviceModal">
-        <div class="advice-panel">
-            <div class="advice-header">
-                <div class="advice-icon" id="adviceIcon"></div>
-                <div class="advice-title" id="adviceTitle"></div>
-                <div class="advice-subtitle" id="adviceSubtitle"></div>
-            </div>
-
+    <div class="modal-overlay" id="adviceModal">
+        <div class="modal-panel">
+            <div class="modal-title" id="adviceTitle"></div>
+            <div class="advice-icon" id="adviceIcon"></div>
             <div id="adviceContent"></div>
-
-            <div class="advice-actions">
-                <button class="advice-btn secondary" id="adviceClose">閉じる</button>
-                <button class="advice-btn primary" id="adviceHome">ホームへ</button>
-            </div>
+            <button class="close-btn" id="adviceClose">閉じる</button>
+            <button class="close-btn secondary" id="adviceHome" style="margin-top:8px;">ホームへ</button>
         </div>
     </div>
 
     <div class="modal-overlay" id="helpModal">
         <div class="modal-panel">
             <div class="modal-title">使い方</div>
-
             <div class="modal-tabs">
-                <div class="modal-tab active" data-tab="usage">使い方</div>
-                <div class="modal-tab" data-tab="results">結果の目安</div>
+                <div class="modal-tab active" data-tab="usage">撮影方法</div>
+                <div class="modal-tab" data-tab="results">結果の見方</div>
             </div>
-
             <div class="help-content active" id="tab-usage">
                 <div class="help-item">
                     <h3>1. 準備</h3>
-                    <p>pHチェックガムを噛んで、膨らますか舌の上に置いてください。</p>
+                    <p>pHチェックガムを噛み、舌の上に乗せるか膨らませます。</p>
                 </div>
                 <div class="help-item">
                     <h3>2. 撮影</h3>
-                    <p>明るい場所で、ガム全体が枠内に入るようにして撮影ボタンを押します。カメラとガムの距離は20〜30cm程度が最適です。</p>
-                </div>
-                <div class="help-item">
-                    <h3>3. ヒント</h3>
-                    <p>・直射日光は避け、室内の照明下で撮影してください。</p>
-                    <p>・ガムに影が入らないように注意しましょう。</p>
+                    <p>明るい場所で、ガムが枠内に収まるように撮影します。</p>
                 </div>
             </div>
-
             <div class="help-content" id="tab-results">
                 <div class="help-item">
-                    <div class="result-legend-item">
-                        <div class="result-legend-color" style="background-color: #FF3B30;"></div>
-                        <div class="result-legend-text"><b>高リスク</b> - 口内が酸性です (赤)</div>
-                    </div>
-                    <div class="result-legend-item">
-                        <div class="result-legend-color" style="background-color: #ff4f7b;"></div>
-                        <div class="result-legend-text"><b>要注意</b> - やや酸性傾向 (ピンク)</div>
-                    </div>
-                    <div class="result-legend-item">
-                        <div class="result-legend-color" style="background-color: #AF52DE;"></div>
-                        <div class="result-legend-text"><b>健康</b> - 良好な状態です (紫)</div>
-                    </div>
-                    <div class="result-legend-item">
-                        <div class="result-legend-color" style="background-color: #0A84FF;"></div>
-                        <div class="result-legend-text"><b>理想的</b> - とても良好です (青)</div>
-                    </div>
-                </div>
-                <div class="help-item">
-                    <h3>判定できない場合</h3>
-                    <p>「暗すぎます」「判定困難」と表示された場合は、場所を変えたり、ガムの位置を調整して再撮影してください。</p>
+                    <h3>色の意味</h3>
+                    <p><span style="color:#0A84FF; font-weight:bold;">青</span>: 理想的<br>
+                    <span style="color:#AF52DE; font-weight:bold;">紫</span>: 健康<br>
+                    <span style="color:#ff4f7b; font-weight:bold;">ピンク</span>: 要注意<br>
+                    <span style="color:#FF3B30; font-weight:bold;">赤</span>: 高リスク</p>
                 </div>
             </div>
-            
             <button class="close-btn" id="closeHelp">閉じる</button>
         </div>
     </div>
@@ -996,738 +566,456 @@
     <canvas id="imageCanvas"></canvas>
 
     <script>
-        // 要素取得
+        // DOM Elements
         const homePage = document.getElementById('homePage');
         const cameraPage = document.getElementById('cameraPage');
-        const startScanBtn = document.getElementById('startScanBtn');
-        const backBtn = document.getElementById('backBtn');
         const video = document.getElementById('video');
         const imageCanvas = document.getElementById('imageCanvas');
         const ctx = imageCanvas.getContext('2d');
-        const captureBtn = document.getElementById('captureBtn');
-        const resultTitle = document.getElementById('resultTitle');
-        const resultMessage = document.getElementById('resultMessage');
         const debugData = document.getElementById('debugData');
-        const scanHint = document.getElementById('scanHint');
-        const scanZone = document.getElementById('scanZone');
-        const zoomBtn = document.getElementById('zoomBtn');
-        const helpBtn = document.getElementById('helpBtn');
-        const helpModal = document.getElementById('helpModal');
-        const closeHelp = document.getElementById('closeHelp');
-        const adviceModal = document.getElementById('adviceModal');
-        const adviceIcon = document.getElementById('adviceIcon');
-        const adviceTitle = document.getElementById('adviceTitle');
-        const adviceSubtitle = document.getElementById('adviceSubtitle');
-        const adviceContent = document.getElementById('adviceContent');
-        const adviceClose = document.getElementById('adviceClose');
-        const adviceHome = document.getElementById('adviceHome');
-        const historyList = document.getElementById('historyList');
-        const totalScans = document.getElementById('totalScans');
-        const healthyRate = document.getElementById('healthyRate');
-        const lastScanText = document.getElementById('lastScanText');
-        const scoreProgress = document.getElementById('scoreProgress');
-
+        
+        // Status & Config
+        let stream = null;
         let isFrozen = false;
         let zoomLevel = 1;
-        let currentResult = null;
 
-        // ローカルストレージからデータ読み込み
+        // Colors
+        const COLORS = {
+            '理想的': '#0A84FF',
+            '健康': '#AF52DE',
+            '要注意': '#ff4f7b',
+            '高リスク': '#FF3B30',
+            '不明': '#8E8E93'
+        };
+
+        // Storage
         function loadHistory() {
-            const history = JSON.parse(localStorage.getItem('phHistory') || '[]');
-            return history;
+            return JSON.parse(localStorage.getItem('phHistory') || '[]');
+        }
+        function saveHistory(res) {
+            const h = loadHistory();
+            h.unshift({ date: new Date().toISOString(), ...res });
+            if(h.length > 50) h.pop();
+            localStorage.setItem('phHistory', JSON.stringify(h));
+            updateDashboard();
+        }
+        function deleteHistory(index, e) {
+            if(e) e.stopPropagation();
+            if(!confirm('削除しますか？')) return;
+            const h = loadHistory();
+            h.splice(index, 1);
+            localStorage.setItem('phHistory', JSON.stringify(h));
+            updateDashboard();
         }
 
-        function saveHistory(result) {
-            const history = loadHistory();
-            history.unshift({
-                date: new Date().toISOString(),
-                result: result.status,
-                color: result.color,
-                hue: result.hue
-            });
-            if (history.length > 50) history.pop();
-            localStorage.setItem('phHistory', JSON.stringify(history));
-            updateHomeStats();
-        }
-
-        function deleteHistoryItem(index, event) {
-            // イベントの伝播を止めて、詳細モーダルが開かないようにする
-            if (event) event.stopPropagation();
-
-            const history = loadHistory();
-            if (confirm('この記録を削除しますか？')) {
-                history.splice(index, 1);
-                localStorage.setItem('phHistory', JSON.stringify(history));
-                updateHomeStats();
-            }
-        }
-
-        // 履歴詳細を表示
-        function showHistoryDetail(index) {
-            const history = loadHistory();
-            const item = history[index];
-            if (item) {
-                // ホームボタンを非表示にする（履歴確認のみの場合）
-                adviceHome.style.display = 'none';
-                adviceClose.style.display = 'block';
-                adviceClose.textContent = '閉じる';
-                
-                showAdvice(item.result, item.color);
-            }
-        }
-
-        // ==========================================
-        // ダッシュボード更新ロジック
-        // ==========================================
-        function updateHomeStats() {
+        // Dashboard Logic
+        function updateDashboard() {
             const history = loadHistory();
             
-            // 1. Basic Stats
-            totalScans.textContent = history.length;
+            // 1. Health Rate
+            const total = history.length;
+            document.getElementById('totalScans').textContent = total;
             
-            // Last Scan Date
-            if (history.length > 0) {
-                const lastDate = new Date(history[0].date);
-                const now = new Date();
-                const diffTime = Math.abs(now - lastDate);
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-                
-                if (diffDays <= 1) lastScanText.textContent = '最終: 今日';
-                else if (diffDays === 2) lastScanText.textContent = '最終: 昨日';
-                else lastScanText.textContent = `最終: ${diffDays}日前`;
+            const circle = document.getElementById('scoreProgress');
+            const rateTxt = document.getElementById('healthyRate');
+            const maxOffset = 251; // 2*PI*40
+
+            if(total > 0) {
+                const healthy = history.filter(h => ['理想的','健康'].includes(h.result)).length;
+                const rate = Math.round((healthy/total)*100);
+                rateTxt.textContent = rate + '%';
+                circle.style.strokeDashoffset = maxOffset - (maxOffset * rate / 100);
+                circle.style.stroke = rate >= 80 ? COLORS['理想的'] : rate >= 50 ? COLORS['健康'] : COLORS['要注意'];
             } else {
-                lastScanText.textContent = '最終: --';
+                rateTxt.textContent = '--';
+                circle.style.strokeDashoffset = maxOffset;
             }
 
-            // 2. Health Rate & Ring
-            if (history.length > 0) {
-                const healthy = history.filter(h => h.result === '健康' || h.result === '理想的').length;
-                const rate = Math.round((healthy / history.length) * 100);
-                healthyRate.textContent = rate + '%';
+            // 2. Next Scan
+            const calIcon = document.getElementById('calendarIcon');
+            const calDate = document.getElementById('calendarDate');
+            const nextTxt = document.getElementById('nextScanText');
+            
+            if(total > 0) {
+                const last = history[0];
+                const lastDate = new Date(last.date);
+                const isGood = ['理想的','健康'].includes(last.result);
+                const interval = isGood ? 7 : 3;
                 
-                // Update SVG Circle
-                const circumference = 2 * Math.PI * 40; // r=40
-                const offset = circumference - (rate / 100) * circumference;
-                scoreProgress.style.strokeDashoffset = offset;
+                const nextDate = new Date(lastDate);
+                nextDate.setDate(lastDate.getDate() + interval);
                 
-                // Color code the ring
-                if (rate >= 80) scoreProgress.style.stroke = '#0A84FF';
-                else if (rate >= 50) scoreProgress.style.stroke = '#AF52DE';
-                else if (rate >= 30) scoreProgress.style.stroke = '#ff4f7b';
-                else scoreProgress.style.stroke = '#FF3B30';
+                const today = new Date();
+                today.setHours(0,0,0,0);
+                const target = new Date(nextDate);
+                target.setHours(0,0,0,0);
                 
+                const diff = Math.ceil((target - today) / (86400000));
+                
+                calDate.textContent = nextDate.getDate();
+                
+                if(diff <= 0) {
+                    calIcon.classList.add('today');
+                    nextTxt.innerHTML = `<span style="color:#FF3B30; font-weight:700;">今日</span>が推奨日`;
+                } else {
+                    calIcon.classList.remove('today');
+                    nextTxt.innerHTML = `あと<strong>${diff}日</strong>`;
+                }
             } else {
-                healthyRate.textContent = '0%';
-                scoreProgress.style.strokeDashoffset = 2 * Math.PI * 40;
+                calDate.textContent = '--';
+                calIcon.classList.remove('today');
+                nextTxt.textContent = 'まずはスキャン';
             }
 
-            // 3. Next Scan Logic
-            updateNextScan(history);
+            // 3. Trend Chart
+            drawTrend(history);
 
-            // 4. Trend Chart
-            drawTrendChart(history);
+            // 4. Distribution
+            drawDist(history);
 
-            // 5. Distribution Bar
-            drawDistribution(history);
-
-            // 6. History List
-            renderHistoryList(history);
+            // 5. History List
+            renderList(history);
         }
 
-        function updateNextScan(history) {
-            const nextScanMain = document.getElementById('nextScanMain');
-            const nextScanDateElement = document.getElementById('nextScanDate');
-            
-            if (history.length === 0) {
-                nextScanMain.textContent = '未測定';
-                nextScanMain.style.color = '#8E8E93';
-                nextScanDateElement.textContent = 'まずはスキャンしましょう';
-                return;
-            }
-
-            const lastRecord = history[0];
-            const lastDate = new Date(lastRecord.date);
-            
-            // 健康・理想的 -> 7日後、要注意・高リスク -> 3日後
-            const isHealthy = (lastRecord.result === '健康' || lastRecord.result === '理想的');
-            const intervalDays = isHealthy ? 7 : 3;
-            
-            const targetDate = new Date(lastDate);
-            targetDate.setDate(lastDate.getDate() + intervalDays);
-            
-            const now = new Date();
-            // 日付計算のため時刻をリセット
-            const todayZero = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            const targetZero = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
-            
-            const diffTime = targetZero - todayZero;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            
-            const dateStr = `${targetDate.getMonth() + 1}/${targetDate.getDate()}`;
-
-            if (diffDays <= 0) {
-                nextScanMain.textContent = '今日';
-                nextScanMain.style.color = '#FF3B30'; // 今日は赤色で強調
-                nextScanDateElement.textContent = `推奨日: ${dateStr}`;
-            } else {
-                nextScanMain.textContent = `あと${diffDays}日`;
-                nextScanMain.style.color = '#1C1C1E';
-                nextScanDateElement.textContent = `予定日: ${dateStr}`;
-            }
-        }
-
-        function getScoreFromResult(result) {
-            if (result === '理想的') return 100;
-            if (result === '健康') return 80;
-            if (result === '要注意') return 50;
-            if (result === '高リスク') return 20;
-            return 0;
-        }
-
-        function drawTrendChart(history) {
+        function drawTrend(history) {
             const canvas = document.getElementById('trendCanvas');
-            if (!canvas) return;
             const ctx = canvas.getContext('2d');
-            
             const dpr = window.devicePixelRatio || 1;
             const rect = canvas.getBoundingClientRect();
             canvas.width = rect.width * dpr;
             canvas.height = rect.height * dpr;
             ctx.scale(dpr, dpr);
-            
-            const dataPoints = history.slice(0, 10).map(h => getScoreFromResult(h.result)).reverse();
-            
-            ctx.clearRect(0, 0, rect.width, rect.height);
-            
-            if (dataPoints.length < 2) {
-                ctx.fillStyle = "#CCC";
-                ctx.font = "12px sans-serif";
-                ctx.fillText("データ不足", rect.width/2 - 30, rect.height/2);
+            ctx.clearRect(0,0,rect.width,rect.height);
+
+            const data = history.slice(0, 10).map(h => {
+                if(h.result==='理想的') return 100;
+                if(h.result==='健康') return 80;
+                if(h.result==='要注意') return 50;
+                if(h.result==='高リスク') return 20;
+                return 0;
+            }).reverse();
+
+            if(data.length < 2) {
+                ctx.fillStyle = '#E5E5EA';
+                ctx.font = '12px sans-serif';
+                ctx.fillText('データ不足', rect.width/2 - 25, rect.height/2);
                 return;
             }
 
-            const padding = 10;
-            const w = rect.width - padding * 2;
-            const h = rect.height - padding * 2;
-            const step = w / (dataPoints.length - 1);
+            const pad = 5;
+            const w = rect.width;
+            const h = rect.height - pad*2;
+            const step = w / (data.length - 1);
 
+            // Gradient Fill
             ctx.beginPath();
-            ctx.moveTo(padding, rect.height - padding);
-            
-            dataPoints.forEach((val, i) => {
-                const x = padding + i * step;
-                const y = (rect.height - padding) - (val / 100 * h);
-                ctx.lineTo(x, y);
+            ctx.moveTo(0, h + pad);
+            data.forEach((val, i) => {
+                ctx.lineTo(i * step, (h + pad) - (val/100 * h));
             });
-
-            ctx.lineTo(rect.width - padding, rect.height - padding);
+            ctx.lineTo(w, h + pad);
             ctx.closePath();
-            
-            const gradient = ctx.createLinearGradient(0, 0, 0, rect.height);
-            gradient.addColorStop(0, "rgba(10, 132, 255, 0.2)");
-            gradient.addColorStop(1, "rgba(10, 132, 255, 0.0)");
-            ctx.fillStyle = gradient;
+            const grad = ctx.createLinearGradient(0,0,0,h);
+            grad.addColorStop(0, 'rgba(10,132,255, 0.2)');
+            grad.addColorStop(1, 'rgba(10,132,255, 0)');
+            ctx.fillStyle = grad;
             ctx.fill();
 
+            // Line
             ctx.beginPath();
-            dataPoints.forEach((val, i) => {
-                const x = padding + i * step;
-                const y = (rect.height - padding) - (val / 100 * h);
-                if (i === 0) ctx.moveTo(x, y);
+            data.forEach((val, i) => {
+                const x = i * step;
+                const y = (h + pad) - (val/100 * h);
+                if(i===0) ctx.moveTo(x,y);
                 else {
-                    const prevX = padding + (i-1) * step;
-                    const prevY = (rect.height - padding) - (dataPoints[i-1] / 100 * h);
-                    const cx = (prevX + x) / 2;
+                    const prevX = (i-1)*step;
+                    const prevY = (h + pad) - (data[i-1]/100 * h);
+                    const cx = (prevX + x)/2;
                     ctx.bezierCurveTo(cx, prevY, cx, y, x, y);
                 }
             });
-            ctx.strokeStyle = "#0A84FF";
-            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#0A84FF';
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
             ctx.stroke();
-
-            dataPoints.forEach((val, i) => {
-                const x = padding + i * step;
-                const y = (rect.height - padding) - (val / 100 * h);
-                ctx.beginPath();
-                ctx.arc(x, y, 3, 0, Math.PI * 2);
-                ctx.fillStyle = "#fff";
-                ctx.fill();
-                ctx.strokeStyle = "#0A84FF";
-                ctx.stroke();
-            });
         }
 
-        function drawDistribution(history) {
+        function drawDist(history) {
             const container = document.getElementById('distributionBar');
             const legend = document.getElementById('distLegend');
             container.innerHTML = '';
             legend.innerHTML = '';
             
-            if (history.length === 0) return;
-
-            const counts = { '理想的': 0, '健康': 0, '要注意': 0, '高リスク': 0 };
-            const colors = { '理想的': '#0A84FF', '健康': '#AF52DE', '要注意': '#ff4f7b', '高リスク': '#FF3B30' };
+            if(history.length === 0) return;
             
-            history.forEach(h => {
-                if (counts[h.result] !== undefined) counts[h.result]++;
-            });
-
+            const counts = {};
+            history.forEach(h => counts[h.result] = (counts[h.result] || 0) + 1);
             const total = history.length;
-            
-            Object.keys(counts).forEach(key => {
-                const count = counts[key];
-                if (count > 0) {
-                    const percent = (count / total) * 100;
-                    const div = document.createElement('div');
-                    div.className = 'dist-segment';
-                    div.style.width = percent + '%';
-                    div.style.backgroundColor = colors[key];
-                    container.appendChild(div);
 
-                    const lItem = document.createElement('div');
-                    lItem.className = 'dist-item';
-                    lItem.innerHTML = `<div class="dist-dot" style="background:${colors[key]}"></div>${key} ${Math.round(percent)}%`;
-                    legend.appendChild(lItem);
-                }
+            ['理想的','健康','要注意','高リスク'].forEach(key => {
+                if(!counts[key]) return;
+                const per = (counts[key]/total)*100;
+                
+                // Bar segment
+                const div = document.createElement('div');
+                div.className = 'dist-segment';
+                div.style.width = per + '%';
+                div.style.backgroundColor = COLORS[key];
+                container.appendChild(div);
+
+                // Legend
+                const leg = document.createElement('div');
+                leg.className = 'dist-item';
+                leg.innerHTML = `<div class="dist-dot" style="background:${COLORS[key]}"></div>${key} ${Math.round(per)}%`;
+                legend.appendChild(leg);
             });
         }
 
-        function renderHistoryList(history) {
-            if (history.length === 0) {
-                historyList.innerHTML = '<div class="empty-history">まだ記録がありません</div>';
-            } else {
-                historyList.innerHTML = history.map((item, index) => {
-                    const date = new Date(item.date);
-                    const dateStr = `${date.getMonth() + 1}/${date.getDate()} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
-                    const trashIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>`;
-                    const arrowIcon = `<svg class="history-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
-
-                    // onclickでshowHistoryDetailを呼ぶ
-                    return `
-                        <div class="history-item" onclick="showHistoryDetail(${index})">
-                            <div class="history-info">
-                                <div class="history-date">${dateStr}</div>
-                                <div class="history-result" style="color: ${item.color}">${item.result}</div>
-                            </div>
-                            ${arrowIcon}
-                            <button class="history-delete" onclick="deleteHistoryItem(${index}, event)">${trashIcon}</button>
-                        </div>
-                    `;
-                }).join('');
+        function renderList(history) {
+            const list = document.getElementById('historyList');
+            if(history.length === 0) {
+                list.innerHTML = '<div class="empty-state">まだ記録がありません</div>';
+                return;
             }
+            
+            list.innerHTML = history.map((item, i) => {
+                const d = new Date(item.date);
+                const dateStr = `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+                return `
+                <div class="history-item" onclick="showAdviceModal('${item.result}', '${item.color}', true)">
+                    <div class="history-indicator" style="background:${COLORS[item.result]||'#ccc'}"></div>
+                    <div class="history-content">
+                        <div class="history-result-text">${item.result}</div>
+                        <div class="history-date-text">${dateStr}</div>
+                    </div>
+                    <div class="history-arrow">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </div>
+                    <button class="history-delete-btn" onclick="deleteHistory(${i}, event)">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </button>
+                </div>
+                `;
+            }).join('');
         }
 
-        window.deleteHistoryItem = deleteHistoryItem;
-
-        // ページ遷移
-        function showPage(page) {
-            const activePage = document.querySelector('.page.active');
-            if (activePage) {
-                activePage.classList.remove('active');
-            }
-            setTimeout(() => {
-                page.classList.add('active');
-            }, 50); 
+        // Navigation
+        function goPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            const target = document.getElementById(id);
+            setTimeout(() => target.classList.add('active'), 50);
         }
 
-        startScanBtn.addEventListener('click', () => {
-            showPage(cameraPage);
+        document.getElementById('startScanBtn').onclick = () => {
+            goPage('cameraPage');
             startCamera();
-        });
+        };
 
-        backBtn.addEventListener('click', () => {
+        document.getElementById('backBtn').onclick = () => {
             stopCamera();
-            showPage(homePage);
-            reset();
-            updateHomeStats(); 
-        });
+            goPage('homePage');
+            resetCameraUI();
+            updateDashboard();
+        };
 
-        // カメラ
+        // Camera Logic
         async function startCamera() {
-            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                resultTitle.textContent = 'カメラ非対応';
-                resultMessage.textContent = 'お使いのブラウザはカメラ機能に非対応です。ChromeやSafariなどの標準ブラウザで開いてみてください。';
-                return;
-            }
-            if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-                resultTitle.textContent = '接続エラー';
-                resultMessage.textContent = 'カメラは安全な接続(HTTPS)でのみ利用可能です。';
-                return;
-            }
-
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: { 
-                        facingMode: 'user',
-                        width: { ideal: 1920 }, 
-                        height: { ideal: 1080 }
-                    },
-                    audio: false
+                // facingMode: 'environment' で外カメラを指定
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
                 });
                 video.srcObject = stream;
-            } catch (err) {
-                resultTitle.textContent = 'カメラエラー';
-                resultMessage.textContent = 'カメラのアクセス許可が必要です。設定を確認してください。';
-                if (err.name === 'NotAllowedError') {
-                    resultMessage.textContent = 'カメラの使用が許可されていません。設定から許可してください。';
-                }
+            } catch(e) {
+                alert('カメラを起動できませんでした。HTTPS接続か確認してください。');
+                goPage('homePage');
             }
         }
-
         function stopCamera() {
-            if (video.srcObject) {
-                video.srcObject.getTracks().forEach(track => track.stop());
-                video.srcObject = null;
-            }
+            if(stream) stream.getTracks().forEach(t => t.stop());
+            video.srcObject = null;
         }
 
-        // ズーム機能
-        zoomBtn.addEventListener('click', () => {
-            const zoomIndicator = zoomBtn.querySelector('span');
-            zoomLevel = zoomLevel === 1 ? 1.5 : 1;
-            if(zoomIndicator) zoomIndicator.textContent = `${zoomLevel}x`;
-
-            video.style.transform = `scaleX(-${zoomLevel}) scaleY(${zoomLevel})`;
-            
-            if (zoomLevel === 1.5) {
-                scanZone.classList.add('zoomed');
-            } else {
-                scanZone.classList.remove('zoomed');
-            }
-            
-            if (navigator.vibrate) navigator.vibrate(30);
-        });
-
-        // 撮影
-        captureBtn.addEventListener('click', () => {
-            if (navigator.vibrate) navigator.vibrate(30);
-
-            if (!video.srcObject) return;
-
-            if (isFrozen) {
-                reset();
-            } else {
-                capture();
-            }
-        });
+        document.getElementById('captureBtn').onclick = () => {
+            if(isFrozen) resetCameraUI();
+            else capture();
+        };
 
         function capture() {
+            if(!video.srcObject) return;
             video.pause();
             isFrozen = true;
-            captureBtn.classList.add('retry-mode');
-            captureBtn.classList.add('loading');
-            scanHint.textContent = '分析中...';
-            resultTitle.textContent = '解析中';
-            resultMessage.textContent = 'お待ちください';
+            
+            const btn = document.getElementById('captureBtn');
+            btn.classList.add('loading');
+            document.getElementById('scanHint').textContent = '解析中...';
 
-            setTimeout(() => {
-                analyze();
-            }, 600);
+            setTimeout(analyze, 800);
         }
 
-        function reset() {
+        function resetCameraUI() {
             video.play();
             isFrozen = false;
-            captureBtn.classList.remove('retry-mode');
-            captureBtn.classList.remove('loading');
-            scanHint.textContent = 'ガムを枠内に合わせてください';
-            resultTitle.textContent = '準備完了';
-            resultTitle.style.color = '#333';
-            resultMessage.textContent = '撮影ボタンをタップ';
-            debugData.textContent = '';
-            currentResult = null;
+            document.getElementById('captureBtn').classList.remove('loading');
+            document.getElementById('scanHint').textContent = 'ガムを枠に合わせてください';
+            document.getElementById('resultTitle').textContent = '準備完了';
+            document.getElementById('resultTitle').style.color = '#333';
+            document.getElementById('resultMessage').textContent = '撮影ボタンをタップ';
         }
 
         function analyze() {
-            captureBtn.classList.remove('loading');
-
+            document.getElementById('captureBtn').classList.remove('loading');
+            
+            // Image Processing
             imageCanvas.width = video.videoWidth;
             imageCanvas.height = video.videoHeight;
-
-            ctx.save();
-            ctx.translate(imageCanvas.width, 0);
-            ctx.scale(-1, 1);
+            const ctx = imageCanvas.getContext('2d');
+            
+            // 外カメラなので反転しない（そのまま描画）
             ctx.drawImage(video, 0, 0);
-            ctx.restore();
 
-            const cx = Math.floor(imageCanvas.width / 2);
-            const cy = Math.floor(imageCanvas.height * 0.40);
-            const areaW = zoomLevel === 1.5 ? 340 : 280;
-            const areaH = zoomLevel === 1.5 ? 220 : 180;
-            const x = Math.floor(cx - areaW / 2);
-            const y = Math.floor(cy - areaH / 2);
+            const cx = imageCanvas.width / 2;
+            const cy = imageCanvas.height * 0.4;
+            const w = zoomLevel === 1.5 ? 340 : 280;
+            const h = zoomLevel === 1.5 ? 220 : 180;
+            
+            const frame = ctx.getImageData(cx - w/2, cy - h/2, w, h);
+            const data = frame.data;
+            
+            let r=0, g=0, b=0, count=0, lumTot=0;
+            for(let i=0; i<data.length; i+=16) {
+                const tr=data[i], tg=data[i+1], tb=data[i+2];
+                const lum = (tr+tg+tb)/3;
+                if(lum < 20 || lum > 250) continue; // Filter dark/bright
+                
+                // Color saturation check
+                const max = Math.max(tr,tg,tb), min = Math.min(tr,tg,tb);
+                if((max-min)/max < 0.1) continue; // Skip gray
 
-            const data = ctx.getImageData(x, y, areaW, areaH);
-            const pixels = data.data;
-
-            let r = 0, g = 0, b = 0, count = 0, brightness = 0;
-
-            for (let i = 0; i < pixels.length; i += 16) {
-                const pr = pixels[i];
-                const pg = pixels[i + 1];
-                const pb = pixels[i + 2];
-                const lum = (pr + pg + pb) / 3;
-
-                if (lum > 250 || lum < 15) continue;
-
-                const max = Math.max(pr, pg, pb);
-                const min = Math.min(pr, pg, pb);
-                const sat = max === 0 ? 0 : (max - min) / max;
-
-                if (sat < 0.08) continue;
-
-                r += pr;
-                g += pg;
-                b += pb;
-                brightness += lum;
-                count++;
+                r+=tr; g+=tg; b+=tb; lumTot+=lum; count++;
             }
 
-            if (count < 100) {
-                showResult('エラー', 'ガムが認識できません', '#333', 0);
-                scanHint.textContent = '再撮影してください';
+            if(count < 50) {
+                showResult('エラー', 'ガムを認識できません', '#333');
                 return;
             }
 
-            const avgR = Math.floor(r / count);
-            const avgG = Math.floor(g / count);
-            const avgB = Math.floor(b / count);
-            const avgBright = Math.floor(brightness / count);
+            const avgR = r/count, avgG = g/count, avgB = b/count;
+            const hsv = rgb2hsv(avgR, avgG, avgB);
+            
+            // Logic
+            let title = '判定不能', color = '#333';
+            
+            if(hsv.h >= 340 || hsv.h < 25) { title='高リスク'; color=COLORS['高リスク']; }
+            else if(hsv.h >= 320 && hsv.h < 340) { title='要注意'; color=COLORS['要注意']; }
+            else if(hsv.h >= 240 && hsv.h < 320) { title='健康'; color=COLORS['健康']; }
+            else if(hsv.h >= 180 && hsv.h < 240) { title='理想的'; color=COLORS['理想的']; }
 
-            const hsv = rgbToHsv(avgR, avgG, avgB);
-            debugData.textContent = `H:${hsv.h}° S:${hsv.s}% V:${hsv.v}%`;
-
-            evaluate(hsv, avgBright);
+            showResult(title, hsv.h, color);
         }
 
-        function evaluate(hsv, brightness) {
-            if (brightness < 35) {
-                showResult('暗すぎます', '明るい場所で撮影してください', '#333', hsv.h);
-                scanHint.textContent = '照明を確認してください';
-            } else if (hsv.h >= 350 || hsv.h < 20) { 
-                showResult('高リスク', '口内が酸性です', '#FF3B30', hsv.h);
-                scanHint.textContent = '早めの歯磨きをおすすめします';
-                vibrate([80, 40, 80]);
-            } else if (hsv.h >= 330 && hsv.h < 350) { 
-                showResult('要注意', 'やや酸性傾向', '#ff4f7b', hsv.h);
-                scanHint.textContent = '食後のケアを意識しましょう';
-                vibrate(80);
-            } else if (hsv.h >= 240 && hsv.h < 330) { 
-                showResult('健康', '良好な状態です', '#AF52DE', hsv.h);
-                scanHint.textContent = 'この調子で続けましょう';
-                vibrate(150);
-            } else if (hsv.h >= 190 && hsv.h < 240) { 
-                showResult('理想的', 'とても良好です', '#0A84FF', hsv.h);
-                scanHint.textContent = '完璧な状態です';
-                vibrate([40, 40, 150]);
-            } else {
-                showResult('判定困難', 'もう一度撮影してください', '#333', hsv.h);
-                scanHint.textContent = '再撮影をおすすめします';
+        function rgb2hsv(r,g,b) {
+            r/=255; g/=255; b/=255;
+            const max=Math.max(r,g,b), min=Math.min(r,g,b);
+            let h=0, d=max-min;
+            if(d!==0) {
+                if(max===r) h=(g-b)/d + (g<b?6:0);
+                else if(max===g) h=(b-r)/d + 2;
+                else h=(r-g)/d + 4;
+                h/=6;
+            }
+            return { h: h*360 };
+        }
+
+        function showResult(title, hue, color) {
+            const titleEl = document.getElementById('resultTitle');
+            titleEl.textContent = title;
+            titleEl.style.color = color;
+            document.getElementById('resultMessage').textContent = title==='エラー' ? '再撮影してください' : '判定完了';
+            
+            if(title !== 'エラー') {
+                saveHistory({ result: title, color: color, hue: Math.round(hue) });
+                setTimeout(() => showAdviceModal(title, color), 800);
             }
         }
 
-        function showResult(title, message, color, hue) {
-            resultTitle.textContent = title;
-            resultMessage.textContent = message;
-            resultTitle.style.color = color;
-            
-            currentResult = { status: title, color: color, hue: hue };
-            
-            if (title !== 'エラー' && title !== '暗すぎます' && title !== '判定困難') {
-                saveHistory(currentResult);
-                setTimeout(() => {
-                    // 通常フローではホームボタンを表示
-                    adviceHome.style.display = 'block';
-                    adviceClose.style.display = 'block';
-                    adviceClose.textContent = '閉じる';
-                    showAdvice(title, color);
-                }, 1000);
-            }
-        }
-
-        function showAdvice(status, color) {
-            const panel = adviceModal.querySelector('.advice-panel');
-            adviceModal.classList.add('show');
-            panel.style.transform = 'scale(0.95)';
-            setTimeout(() => panel.style.transform = 'scale(1)', 10);
-            
-            const adviceData = {
-                '高リスク': {
-                    icon: '⚠️',
-                    title: '高リスク',
-                    subtitle: '口内が酸性になっています',
-                    content: `
-                        <div class="advice-section">
-                            <h3>今すぐ行うこと</h3>
-                            <ul>
-                                <li>すぐに歯磨きをしましょう</li>
-                                <li>フッ素配合の歯磨き粉を使用してください</li>
-                                <li>水やお茶で口をすすぎましょう</li>
-                            </ul>
-                        </div>
-                        <div class="advice-section">
-                            <h3>酸性の原因</h3>
-                            <p>糖分の多い食べ物や飲み物、炭酸飲料、柑橘類などが原因です。食後30分以内の歯磨きを心がけましょう。</p>
-                        </div>
-                    `
-                },
-                '要注意': {
-                    icon: '⚡',
-                    title: '要注意 (ピンク)',
-                    subtitle: 'やや酸性傾向です',
-                    content: `
-                        <div class="advice-section">
-                            <h3>今すぐ行うこと</h3>
-                            <ul>
-                                <li>水で口をよくすすぎましょう</li>
-                                <li>できれば歯磨きをしてください</li>
-                                <li>ガムを噛んで唾液の分泌を促しましょう</li>
-                            </ul>
-                        </div>
-                        <div class="advice-section">
-                            <h3>注意点</h3>
-                            <p>このまま放置すると虫歯のリスクが高まります。早めのケアで口内環境を整えましょう。</p>
-                        </div>
-                    `
-                },
-                '健康': {
-                    icon: '👍',
-                    title: '健康',
-                    subtitle: '良好な口内環境です',
-                    content: `
-                        <div class="advice-section">
-                            <h3>素晴らしいです！</h3>
-                            <p>あなたの口内環境は健康的な状態を保っています。この調子で続けましょう。</p>
-                        </div>
-                        <div class="advice-section">
-                            <h3>維持するために</h3>
-                            <ul>
-                                <li>1日2回以上の歯磨きを継続</li>
-                                <li>デンタルフロスも使用する</li>
-                            </ul>
-                        </div>
-                    `
-                },
-                '理想的': {
-                    icon: '🌟',
-                    title: '理想的',
-                    subtitle: '完璧な口内環境です',
-                    content: `
-                        <div class="advice-section">
-                            <h3>完璧です！</h3>
-                            <p>あなたの口内環境は理想的な状態です。素晴らしいデンタルケアを続けていますね。</p>
-                        </div>
-                        <div class="advice-section">
-                            <h3>この状態を維持しましょう</h3>
-                            <ul>
-                                <li>現在のケア習慣を継続してください</li>
-                                <li>定期的なチェックで健康を確認</li>
-                            </ul>
-                        </div>
-                    `
-                }
+        // Advice Modal
+        function showAdviceModal(title, color, isHistoryMode = false) {
+            const modal = document.getElementById('adviceModal');
+            const icons = { '高リスク':'⚠️', '要注意':'⚡', '健康':'👍', '理想的':'🌟' };
+            const texts = {
+                '高リスク': '口内が酸性です。すぐに歯磨きか水洗いを推奨します。',
+                '要注意': 'やや酸性傾向です。ガムを噛むか水を飲みましょう。',
+                '健康': '良好な状態です。この調子を維持しましょう。',
+                '理想的': '完璧な状態です！素晴らしいケア習慣です。'
             };
 
-            const advice = adviceData[status] || adviceData['要注意'];
-            adviceIcon.textContent = advice.icon;
-            adviceTitle.textContent = advice.title;
-            adviceTitle.style.color = color;
-            adviceSubtitle.textContent = advice.subtitle;
-            adviceContent.innerHTML = advice.content;
+            document.getElementById('adviceIcon').textContent = icons[title] || '';
+            const tEl = document.getElementById('adviceTitle');
+            tEl.textContent = title;
+            tEl.style.color = color;
+            
+            document.getElementById('adviceContent').innerHTML = `
+                <div class="advice-section">
+                    <h3>アドバイス</h3>
+                    <p>${texts[title]||''}</p>
+                </div>
+            `;
+            
+            // ホームボタンの制御（履歴からの閲覧なら非表示）
+            document.getElementById('adviceHome').style.display = isHistoryMode ? 'none' : 'block';
+            
+            modal.classList.add('show');
+            modal.querySelector('.modal-panel').style.transform = 'scale(1)';
         }
 
-        function vibrate(pattern) {
-            if (navigator.vibrate) navigator.vibrate(pattern);
-        }
-
-        function rgbToHsv(r, g, b) {
-            r /= 255;
-            g /= 255;
-            b /= 255;
-
-            const max = Math.max(r, g, b);
-            const min = Math.min(r, g, b);
-            const delta = max - min;
-
-            let h = 0;
-            const s = max === 0 ? 0 : delta / max;
-            const v = max;
-
-            if (delta !== 0) {
-                if (max === r) {
-                    h = ((g - b) / delta + (g < b ? 6 : 0)) / 6;
-                } else if (max === g) {
-                    h = ((b - r) / delta + 2) / 6;
-                } else {
-                    h = ((r - g) / delta + 4) / 6;
-                }
-            }
-
-            return {
-                h: Math.floor(h * 360),
-                s: Math.floor(s * 100),
-                v: Math.floor(v * 100)
-            };
-        }
-
-        // アドバイスモーダルのアクション
-        adviceClose.addEventListener('click', () => {
-            closeAndHideModal(adviceModal);
-        });
-
-        adviceHome.addEventListener('click', () => {
-            closeAndHideModal(adviceModal, () => {
-                stopCamera();
-                showPage(homePage);
-                reset();
-                updateHomeStats();
-            });
-        });
-
-        adviceModal.addEventListener('click', (e) => {
-            if (e.target === adviceModal) {
-                closeAndHideModal(adviceModal);
-            }
-        });
-
-        // ヘルプモーダル
-        helpBtn.addEventListener('click', () => {
-            const panel = helpModal.querySelector('.modal-panel');
-            helpModal.classList.add('show');
-            panel.style.transform = 'scale(0.95)';
-            setTimeout(() => panel.style.transform = 'scale(1)', 10);
-            vibrate(30);
-        });
-        
-        document.querySelectorAll('.modal-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                const targetTab = tab.dataset.tab;
-                document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-
-                document.querySelectorAll('.help-content').forEach(content => {
-                    content.classList.toggle('active', content.id === `tab-${targetTab}`);
-                });
-            });
-        });
-
-        function closeAndHideModal(modal, callback) {
-            const panel = modal.querySelector('.advice-panel, .modal-panel');
-            if (panel) panel.style.transform = 'scale(0.95)';
+        function closeAdvice(goHome) {
+            const modal = document.getElementById('adviceModal');
+            modal.querySelector('.modal-panel').style.transform = 'scale(0.94)';
             modal.classList.remove('show');
-            if (callback) setTimeout(callback, 300);
+            
+            if(goHome) {
+                setTimeout(() => {
+                    stopCamera();
+                    goPage('homePage');
+                    resetCameraUI();
+                    updateDashboard();
+                }, 300);
+            }
         }
 
-        closeHelp.addEventListener('click', () => {
-            closeAndHideModal(helpModal);
+        document.getElementById('adviceClose').onclick = () => closeAdvice(false);
+        document.getElementById('adviceHome').onclick = () => closeAdvice(true);
+        
+        // Help & Zoom
+        document.getElementById('zoomBtn').onclick = function() {
+            zoomLevel = zoomLevel===1 ? 1.5 : 1;
+            this.querySelector('span').textContent = zoomLevel+'x';
+            // 反転なしのズーム
+            video.style.transform = `scale(${zoomLevel})`;
+            document.getElementById('scanZone').classList.toggle('zoomed', zoomLevel===1.5);
+        };
+        
+        const helpModal = document.getElementById('helpModal');
+        document.getElementById('helpBtn').onclick = () => {
+            helpModal.classList.add('show');
+            helpModal.querySelector('.modal-panel').style.transform = 'scale(1)';
+        };
+        document.getElementById('closeHelp').onclick = () => {
+            helpModal.classList.remove('show');
+            helpModal.querySelector('.modal-panel').style.transform = 'scale(0.94)';
+        };
+        document.querySelectorAll('.modal-tab').forEach(t => {
+            t.onclick = () => {
+                document.querySelectorAll('.modal-tab').forEach(x=>x.classList.remove('active'));
+                document.querySelectorAll('.help-content').forEach(x=>x.classList.remove('active'));
+                t.classList.add('active');
+                document.getElementById('tab-'+t.dataset.tab).classList.add('active');
+            }
         });
 
-        helpModal.addEventListener('click', (e) => {
-            if (e.target === helpModal) closeAndHideModal(helpModal);
-        });
-
-        // 初期化
-        updateHomeStats();
+        // Init
+        updateDashboard();
     </script>
 </body>
 </html>

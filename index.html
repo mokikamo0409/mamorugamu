@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>pH Scanner</title>
+    <title>pH Scanner - マモルガム</title>
     
     <style>
         * { 
@@ -33,12 +33,14 @@
             transform: scale(0.98);
             pointer-events: none;
             background: #F2F2F7;
+            z-index: 1;
         }
 
         .page.active {
             opacity: 1;
             transform: scale(1);
             pointer-events: auto;
+            z-index: 10;
         }
 
         /* ホームページ */
@@ -52,6 +54,7 @@
         .home-header {
             text-align: center;
             padding: 20px 0 24px 0;
+            position: relative;
         }
 
         .home-title {
@@ -65,6 +68,36 @@
             font-size: 14px;
             color: #666;
         }
+
+        /* ヘッダーボタン共通スタイル */
+        .header-icon-btn {
+            position: absolute;
+            top: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            color: #0A84FF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.1s;
+            z-index: 20;
+        }
+        
+        .header-icon-btn:active {
+            transform: scale(0.9);
+            background: #f0f0f0;
+        }
+
+        /* 右上：ストア */
+        .header-store-btn { right: 0; }
+        
+        /* 左上：リーダーボード */
+        .header-rank-btn { left: 0; color: #FF9500; }
 
         .start-scan-btn {
             width: 100%;
@@ -81,6 +114,10 @@
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             position: relative;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         
         .start-scan-btn:active {
@@ -334,6 +371,56 @@
             border: 1px dashed #C7C7CC;
         }
 
+        /* ランキングリスト */
+        .rank-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .rank-card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .rank-card.my-rank {
+            background: #F0F9FF;
+            border: 1px solid #0A84FF;
+        }
+
+        .rank-num {
+            width: 32px;
+            font-size: 18px;
+            font-weight: 800;
+            color: #8E8E93;
+            text-align: center;
+        }
+
+        .rank-1 { color: #FFD700; font-size: 24px; }
+        .rank-2 { color: #C0C0C0; font-size: 22px; }
+        .rank-3 { color: #CD7F32; font-size: 20px; }
+
+        .rank-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #E5E5EA;
+            margin: 0 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .rank-info { flex: 1; }
+        .rank-name { font-size: 15px; font-weight: 600; color: #1C1C1E; }
+        .rank-score { font-size: 18px; font-weight: 700; color: #0A84FF; }
+        .rank-label { font-size: 11px; color: #8E8E93; }
+
         /* カメラページ */
         .camera-view {
             position: relative;
@@ -346,7 +433,6 @@
             width: 100%; 
             height: 100%;
             object-fit: cover;
-            /* transform: scaleX(-1); 背面カメラのため削除 */
         }
 
         .top-bar {
@@ -807,15 +893,21 @@
     <div class="page active" id="homePage">
         <div class="home-page">
             <div class="home-header">
+                <button class="header-icon-btn header-rank-btn" id="toRankBtn" aria-label="ランキング">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>
+                </button>
+
                 <div class="home-title">pH Scanner</div>
                 <div class="home-subtitle">口内環境をスマートに管理</div>
+                
+                <button class="header-icon-btn header-store-btn" id="toStoreBtn" aria-label="マモルガムを購入">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                </button>
             </div>
 
             <button class="start-scan-btn" id="startScanBtn">
-                <span style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                    スキャンを開始
-                </span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                スキャンを開始
             </button>
 
             <div class="dashboard-grid">
@@ -877,6 +969,121 @@
                     <div class="empty-history">まだ記録がありません</div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="page" id="leaderboardPage">
+        <div class="home-page">
+            <div class="top-bar" style="position: relative; padding: 0; background: transparent; margin-bottom: 20px;">
+                <button class="back-btn" id="rankBackBtn" style="background: rgba(0,0,0,0.05); color: #333; border: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.828 12L16.414 16.586 15 18 9 12 15 6 16.414 7.414z"/></svg>
+                </button>
+                <div style="font-weight: 700; font-size: 17px; position: absolute; left: 50%; transform: translateX(-50%);">ランキング</div>
+            </div>
+
+            <div style="background: white; border-radius: 16px; padding: 20px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center;">
+                <div style="font-size: 13px; color: #8E8E93; margin-bottom: 4px;">あなたの現在のランク</div>
+                <div style="font-size: 42px; font-weight: 800; color: #0A84FF; line-height: 1.2;">12<span style="font-size: 16px; font-weight: 600;">位</span></div>
+                <div style="font-size: 14px; color: #333; font-weight: 600;">Top 5% に入っています！</div>
+            </div>
+
+            <div class="section-title">トップランカー</div>
+            <div class="rank-list">
+                <div class="rank-card">
+                    <div class="rank-num rank-1">1</div>
+                    <div class="rank-avatar">👑</div>
+                    <div class="rank-info">
+                        <div class="rank-name">かもち みき</div>
+                        <div class="rank-label">理想的な状態</div>
+                    </div>
+                    <div class="rank-score">100</div>
+                </div>
+
+                <div class="rank-card">
+                    <div class="rank-num rank-2">2</div>
+                    <div class="rank-avatar">🐱</div>
+                    <div class="rank-info">
+                        <div class="rank-name">早川 ともはる</div>
+                        <div class="rank-label">とても健康</div>
+                    </div>
+                    <div class="rank-score">98</div>
+                </div>
+
+                <div class="rank-card">
+                    <div class="rank-num rank-3">3</div>
+                    <div class="rank-avatar">🌟</div>
+                    <div class="rank-info">
+                        <div class="rank-name">別府 心平</div>
+                        <div class="rank-label">良好</div>
+                    </div>
+                    <div class="rank-score">96</div>
+                </div>
+
+                <div class="rank-card">
+                    <div class="rank-num">4</div>
+                    <div class="rank-avatar">⚽</div>
+                    <div class="rank-info">
+                        <div class="rank-name">川俣 はるき</div>
+                        <div class="rank-label">良好</div>
+                    </div>
+                    <div class="rank-score">92</div>
+                </div>
+
+                <div class="rank-card">
+                    <div class="rank-num">5</div>
+                    <div class="rank-avatar">👟</div>
+                    <div class="rank-info">
+                        <div class="rank-name">りゅう</div>
+                        <div class="rank-label">良い感じ</div>
+                    </div>
+                    <div class="rank-score">88</div>
+                </div>
+
+                <div class="rank-card my-rank">
+                    <div class="rank-num">12</div>
+                    <div class="rank-avatar">🙂</div>
+                    <div class="rank-info">
+                        <div class="rank-name">あなた</div>
+                        <div class="rank-label">継続して頑張ろう！</div>
+                    </div>
+                    <div class="rank-score" id="myScoreDisplay">--</div>
+                </div>
+            </div>
+            
+            <div style="height: 40px;"></div>
+        </div>
+    </div>
+
+    <div class="page" id="purchasePage">
+        <div class="home-page">
+            <div class="top-bar" style="position: relative; padding: 0; background: transparent; margin-bottom: 20px;">
+                <button class="back-btn" id="purchaseBackBtn" style="background: rgba(0,0,0,0.05); color: #333; border: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.828 12L16.414 16.586 15 18 9 12 15 6 16.414 7.414z"/></svg>
+                </button>
+                <div style="font-weight: 700; font-size: 17px; position: absolute; left: 50%; transform: translateX(-50%);">ストア</div>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 32px;">
+                <img src="mamorugamu.png" alt="マモルガム" style="width: 350px; height: 350px; border-radius: 20px; margin: 0 auto 24px auto; display: block; object-fit: cover; box-shadow: 0 8px 20px rgba(0,0,0,0.1);">
+                
+                <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">マモルガム</h2>
+                <p style="color: #666; font-size: 14px; line-height: 1.6;">
+                    噛むだけで口内pHチェック。<br>
+                    習慣で、大切な歯を守りましょう。
+                </p>
+            </div>
+
+            <div style="background: white; border-radius: 16px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                <div style="font-weight: 700; font-size: 16px; margin-bottom: 12px;">通常パック</div>
+                <p style="font-size: 13px; color: #666; margin-bottom: 16px;">アントシアニン配合のpHガム</p>
+                <div style="display: flex; align-items: baseline; gap: 4px; margin-bottom: 16px;">
+                    <span style="font-size: 24px; font-weight: 700;">¥500</span>
+                    <span style="font-size: 12px; color: #666;">/ 個</span>
+                </div>
+                <button class="start-scan-btn" style="margin-bottom: 0;">購入する</button>
+            </div>
+            
+            <div style="height: 40px;"></div>
         </div>
     </div>
 
@@ -999,7 +1206,16 @@
         // 要素取得
         const homePage = document.getElementById('homePage');
         const cameraPage = document.getElementById('cameraPage');
+        const purchasePage = document.getElementById('purchasePage');
+        const leaderboardPage = document.getElementById('leaderboardPage');
+
         const startScanBtn = document.getElementById('startScanBtn');
+        const toStoreBtn = document.getElementById('toStoreBtn');
+        const purchaseBackBtn = document.getElementById('purchaseBackBtn');
+        const toRankBtn = document.getElementById('toRankBtn');
+        const rankBackBtn = document.getElementById('rankBackBtn');
+        const myScoreDisplay = document.getElementById('myScoreDisplay');
+
         const backBtn = document.getElementById('backBtn');
         const video = document.getElementById('video');
         const imageCanvas = document.getElementById('imageCanvas');
@@ -1050,7 +1266,6 @@
         }
 
         function deleteHistoryItem(index, event) {
-            // イベントの伝播を止めて、詳細モーダルが開かないようにする
             if (event) event.stopPropagation();
 
             const history = loadHistory();
@@ -1061,12 +1276,10 @@
             }
         }
 
-        // 履歴詳細を表示
         function showHistoryDetail(index) {
             const history = loadHistory();
             const item = history[index];
             if (item) {
-                // ホームボタンを非表示にする（履歴確認のみの場合）
                 adviceHome.style.display = 'none';
                 adviceClose.style.display = 'block';
                 adviceClose.textContent = '閉じる';
@@ -1099,13 +1312,14 @@
             }
 
             // 2. Health Rate & Ring
+            let rate = 0;
             if (history.length > 0) {
                 const healthy = history.filter(h => h.result === '健康' || h.result === '理想的').length;
-                const rate = Math.round((healthy / history.length) * 100);
+                rate = Math.round((healthy / history.length) * 100);
                 healthyRate.textContent = rate + '%';
                 
                 // Update SVG Circle
-                const circumference = 2 * Math.PI * 40; // r=40
+                const circumference = 2 * Math.PI * 40; 
                 const offset = circumference - (rate / 100) * circumference;
                 scoreProgress.style.strokeDashoffset = offset;
                 
@@ -1118,6 +1332,11 @@
             } else {
                 healthyRate.textContent = '0%';
                 scoreProgress.style.strokeDashoffset = 2 * Math.PI * 40;
+            }
+
+            // Update my score in leaderboard
+            if(myScoreDisplay) {
+                myScoreDisplay.textContent = rate;
             }
 
             // 3. Next Scan Logic
@@ -1147,7 +1366,6 @@
             const lastRecord = history[0];
             const lastDate = new Date(lastRecord.date);
             
-            // 健康・理想的 -> 7日後、要注意・高リスク -> 3日後
             const isHealthy = (lastRecord.result === '健康' || lastRecord.result === '理想的');
             const intervalDays = isHealthy ? 7 : 3;
             
@@ -1155,7 +1373,6 @@
             targetDate.setDate(lastDate.getDate() + intervalDays);
             
             const now = new Date();
-            // 日付計算のため時刻をリセット
             const todayZero = new Date(now.getFullYear(), now.getMonth(), now.getDate());
             const targetZero = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
             
@@ -1166,7 +1383,7 @@
 
             if (diffDays <= 0) {
                 nextScanMain.textContent = '今日';
-                nextScanMain.style.color = '#FF3B30'; // 今日は赤色で強調
+                nextScanMain.style.color = '#FF3B30';
                 nextScanDateElement.textContent = `推奨日: ${dateStr}`;
             } else {
                 nextScanMain.textContent = `あと${diffDays}日`;
@@ -1301,7 +1518,6 @@
                     const trashIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>`;
                     const arrowIcon = `<svg class="history-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
 
-                    // onclickでshowHistoryDetailを呼ぶ
                     return `
                         <div class="history-item" onclick="showHistoryDetail(${index})">
                             <div class="history-info">
@@ -1334,6 +1550,23 @@
             startCamera();
         });
 
+        toStoreBtn.addEventListener('click', () => {
+            showPage(purchasePage);
+        });
+
+        purchaseBackBtn.addEventListener('click', () => {
+            showPage(homePage);
+        });
+
+        // リーダーボードへの遷移
+        toRankBtn.addEventListener('click', () => {
+            showPage(leaderboardPage);
+        });
+
+        rankBackBtn.addEventListener('click', () => {
+            showPage(homePage);
+        });
+
         backBtn.addEventListener('click', () => {
             stopCamera();
             showPage(homePage);
@@ -1355,7 +1588,6 @@
             }
 
             try {
-                // facingMode: 'environment' で外カメラを指定
                 const stream = await navigator.mediaDevices.getUserMedia({
                     video: { 
                         facingMode: 'environment',
@@ -1381,13 +1613,11 @@
             }
         }
 
-        // ズーム機能
         zoomBtn.addEventListener('click', () => {
             const zoomIndicator = zoomBtn.querySelector('span');
             zoomLevel = zoomLevel === 1 ? 1.5 : 1;
             if(zoomIndicator) zoomIndicator.textContent = `${zoomLevel}x`;
 
-            // 外カメラなので反転は不要
             video.style.transform = `scale(${zoomLevel})`;
             
             if (zoomLevel === 1.5) {
@@ -1399,7 +1629,6 @@
             if (navigator.vibrate) navigator.vibrate(30);
         });
 
-        // 撮影
         captureBtn.addEventListener('click', () => {
             if (navigator.vibrate) navigator.vibrate(30);
 
@@ -1446,7 +1675,6 @@
             imageCanvas.height = video.videoHeight;
             const ctx = imageCanvas.getContext('2d');
 
-            // 外カメラなので、そのまま描画（反転なし）
             ctx.drawImage(video, 0, 0);
 
             const cx = Math.floor(imageCanvas.width / 2);
@@ -1535,7 +1763,6 @@
             if (title !== 'エラー' && title !== '暗すぎます' && title !== '判定困難') {
                 saveHistory(currentResult);
                 setTimeout(() => {
-                    // 通常フローではホームボタンを表示
                     adviceHome.style.display = 'block';
                     adviceClose.style.display = 'block';
                     adviceClose.textContent = '閉じる';
@@ -1669,7 +1896,6 @@
             };
         }
 
-        // アドバイスモーダルのアクション
         adviceClose.addEventListener('click', () => {
             closeAndHideModal(adviceModal);
         });
@@ -1689,7 +1915,6 @@
             }
         });
 
-        // ヘルプモーダル
         helpBtn.addEventListener('click', () => {
             const panel = helpModal.querySelector('.modal-panel');
             helpModal.classList.add('show');
@@ -1725,7 +1950,6 @@
             if (e.target === helpModal) closeAndHideModal(helpModal);
         });
 
-        // 初期化
         updateHomeStats();
     </script>
 </body>
